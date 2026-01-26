@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Edit Plant</title>
+        <style>
+            *, *::before, *::after {
+                box-sizing: border-box;
+            }
+            .container {
+                max-width: 500px;
+                margin: 0 auto;
+                width: 100%;
+            }
+            body {
+                font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+                background: #020617;
+                color: white;
+                padding: 20px;
+            }
+            .form-group { margin-bottom: 20px; }
+            label {
+                display: block;
+                margin-bottom: 8px;
+                color: #94a3b8;
+                font-weight: 600;
+            }
+            input, textarea, select { 
+                width: 100%;
+                padding: 12px;
+                border-radius: 8px; 
+                border: 1px solid #1f2937; 
+                background: #0f172a; 
+                color: white;
+            }
+            .submit-btn {
+                background: #22c55e;
+                color: #052e16;
+                border: none;
+                cursor: pointer;
+                padding: 12px;
+                border-radius: 8px;
+                width: 100%;
+                font-weight: 700;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Edit Plant</h1>
+
+            <form method="POST" enctype="multipart/form-data">
+
+                <div class="form-group">
+                  <label>Plant Name</label>
+                  <input type="text" name="name" value="{{ plant.name }}" required>
+                </div>
+
+                <div class="form-group">
+                  <button type="submit" class="submit-btn">Update Plant</button>
+                </div>
+            </form>
+
+        <br>
+
+        <a href="{{ url_for('journal', plant=plant.id) }}">← Back to Journal</a>
+
+    </body>
+</html>

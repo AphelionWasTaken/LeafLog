@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LeafLog - Journal</title>
+        <style>
+            :root {
+                --bg: #0f172a;
+                --card: #020617;
+                --accent: #22c55e;
+                --muted: #94a3b8;
+                --text: #e5e7eb;
+            }
+            * { box-sizing: border-box; }
+            body {
+                font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+                background: #020617;
+                color: var(--text);
+                margin: 0;
+                padding: 20px;
+            }
+            .container {
+                width: 100%;
+                margin: 0 auto;
+            }
+            .header-section {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                margin-bottom: 32px;
+            }
+            .top-bar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                min-height: 48px;
+                margin-bottom: 10px;
+            }
+            .logo-title {
+                font-size: 24px;
+                font-weight: 800;
+                letter-spacing: -0.02em;
+                color: var(--accent);
+                position: static;
+                transform: none;
+            }
+            @media (min-width: 768px) {
+                .logo-title {
+                    position: absolute;
+                    left: 50%;
+                    transform: translateX(-50%);
+                }
+            }
+            .action-bar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+                border-top: 1px solid #1f2937;
+                padding-top: 15px;
+            }
+            .plant-name {
+                font-size: 28px;
+                font-weight: 700;
+                margin: 0;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .subtitle {
+                text-align: center;
+                width: 100%;
+                margin-bottom: 12px;
+                font-size: 14px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+            .button {
+                background: var(--accent);
+                color: #052e16;
+                border: none;
+                border-radius: 12px;
+                padding: 10px 14px;
+                font-weight: 600;
+                cursor: pointer;
+                box-shadow: 0 10px 20px rgba(34,197,94,.2);
+            }
+            .button.secondary {
+                background: transparent;
+                color: var(--text);
+                border: 1px solid #1f2937;
+            }
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 16px;
+            }
+            .card {
+                background: #020617;
+                border: 1px solid #1f2937;
+                border-radius: 16px;
+                padding: 16px;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                overflow-wrap: break-word;
+            }
+            .card-content {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            .card-footer {
+                margin-top: auto;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            .card h3 {
+                margin: 0;
+                font-size: 18px;
+            }
+            .card p {
+                color: var(--muted);
+                margin: 0;
+            }
+            .card .actions {
+                display: flex;
+                gap: 8px;
+                margin-top: 8px;
+            }
+            .badge {
+                font-size: 12px;
+                color: #052e16;
+                background: linear-gradient(135deg, #22c55e, #4ade80);
+                border: none;
+                padding: 6px 12px;
+                border-radius: 999px;
+                width: fit-content;
+                font-weight: 600;
+                box-shadow: 0 4px 12px rgba(34,197,94,.35);
+            }
+            .thumbs {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+                gap: 8px;
+                margin-top: 10px;
+            }
+            .thumb {
+                width: 100%;
+                height: 90px;
+                object-fit: cover;
+                border-radius: 10px;
+                cursor: pointer;
+                transition: transform .2s ease;
+            }
+            .thumb:hover { transform: scale(1.05);}
+            .modal {
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,.85);
+                display: none;
+                align-items: center;
+                justify-content: center;
+                z-index: 1200;
+            }
+            .modal.open { display: flex;}
+            .modal img {
+                max-width: 92vw;
+                max-height: 92vh;
+                border-radius: 16px;
+            }
+            .modal .close {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                background: rgba(255,255,255,.15);
+                color: white;
+                border: none;
+                padding: 8px 12px;
+                border-radius: 999px;
+                cursor: pointer;
+            }
+            .nav {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                background: rgba(255,255,255,.15);
+                color: white;
+                border: none;
+                font-size: 40px;
+                width: 56px;
+                height: 56px;
+                border-radius: 50%;
+                cursor: pointer;
+            }
+            .nav.left { left: 20px; }
+            .nav.right { right: 20px; }
+            .menu-button {
+                background: #020617;
+                border: 1px solid #1f2937;
+                color: #e5e7eb;
+                font-size: 20px;
+                padding: 8px 12px;
+                border-radius: 10px;
+                cursor: pointer;
+            }
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -320px;
+                height: 100%;
+                width: 300px;
+                background: #020617;
+                border-right: 1px solid #1f2937;
+                padding: 16px;
+                transition: left 0.25s ease;
+                z-index: 1000;
+            }
+            .sidebar.open { left: 0; }
+            .backdrop {
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.6);
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.25s ease;
+                z-index: 1100;
+            }
+            .backdrop.show {
+                opacity: 1;
+                pointer-events: auto;
+            }
+            .backdrop2 {
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.6);
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.25s ease;
+                z-index: 900;
+            }
+            .backdrop2.show {
+                opacity: 1;
+                pointer-events: auto;
+            }
+            .sidebar-card {
+                background: #020617;
+                border: 1px solid #1f2937;
+                border-radius: 16px;
+                padding: 16px;
+                margin-bottom: 16px;
+            }
+            .collapse-button {
+                width: 100%;
+                background: transparent;
+                border: 1px solid #1f2937;
+                color: #e5e7eb;
+                padding: 10px;
+                border-radius: 10px;
+                font-size: 15px;
+                cursor: pointer;
+                margin-bottom: 16px;
+                transition: background 0.2s ease;
+            }
+            .collapse-button:hover { background: #020617; }
+            .home-btn {
+                width: 100%;
+                padding: 14px;
+                background: #22c55e;
+                color: #052e16;
+                font-weight: 700;
+            }
+            .add-plant-btn {
+                display: block;
+                background: #22c55e;
+                color: #052e16;
+                padding: 12px;
+                border-radius: 12px;
+                font-weight: 700;
+                text-align: center;
+                text-decoration: none;
+                margin-bottom: 16px;
+                box-shadow: 0 6px 16px rgba(34,197,94,.25);
+            }
+            .edit-plant-btn {
+                display: block;
+                background: #22c55e;
+                color: #052e16;
+                padding: 12px;
+                border-radius: 12px;
+                font-weight: 700;
+                text-align: center;
+                text-decoration: none;
+                margin-bottom: 16px;
+                box-shadow: 0 6px 16px rgba(34,197,94,.25);
+            }
+            .del-plant-btn {
+                display: block;
+                width: 100%;
+                background: #c52222;
+                color: #052e16;
+                padding: 14px;
+                border-radius: 12px;
+                border: none;
+                cursor: pointer;
+                font-size: 15px;
+                font-weight: 600;
+                text-align: center;
+                text-decoration: none;
+                margin-bottom: 0px;
+                box-shadow: 0 6px 16px rgba(197, 34, 34, 0.25);
+            }
+            .logout-button {
+                width: 100%;
+                padding: 14px;
+                background: #c52222;
+                color: #052e16;
+                font-weight: 700;
+                margin-bottom: 16px;
+            }
+            .plant-list {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            .plant-item {
+                padding: 10px 12px;
+                border-radius: 10px;
+                text-decoration: none;
+                text-align: center;
+                color: #e5e7eb;
+                background: #020617;
+                border: 1px solid #1f2937;
+                transition: background .2s ease;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 100%;
+            }
+            .plant-item:hover {
+                background: #020617;
+                border-color: #22c55e;
+            }
+            .plant-item.active {
+                background: linear-gradient(135deg, #22c55e, #4ade80);
+                color: #052e16;
+                font-weight: 600;
+                border: none;
+            }
+            .thumb-wrap { position: relative; }
+            .thumb-overlay {
+                position: absolute;
+                inset: 0;
+                background: rgba(0,0,0,.65);
+                color: white;
+                font-size: 28px;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 10px;
+                cursor: pointer;
+            }
+            .notes-text {
+                color: var(--muted);
+                margin: 0;
+                position: relative;
+                line-height: 1.4em;
+            }
+            .notes-text.collapsed {
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 6;
+                line-clamp: 6;
+            }
+            .toggle-notes {
+                background: none;
+                border: none;
+                color: var(--accent);
+                cursor: pointer;
+                font-weight: 600;
+                padding: 0;
+                text-align: left;
+            }
+        </style>
+    </head>
+    <script>
+        let images = [];
+        let currentIndex = 0;
+
+        function rebuildImages() {
+            images = Array.from(document.querySelectorAll(".thumb")).map(img => img.src);
+        }
+
+        function openModalFromThumb(img) {
+            rebuildImages();
+            currentIndex = images.indexOf(img.src);
+            if (currentIndex == -1) return;
+            document.getElementById("modalImage").src = images[currentIndex];
+            document.getElementById("imageModal").classList.add("open");
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeModal() {
+            document.getElementById("imageModal").classList.remove("open");
+            document.body.style.overflow = "";
+        }
+
+        function nextImage() {
+            currentIndex = (currentIndex + 1) % images.length;
+            document.getElementById("modalImage").src = images[currentIndex];
+        }
+
+        function prevImage() {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            document.getElementById("modalImage").src = images[currentIndex];
+        }
+
+        document.addEventListener("keydown", function(e) {
+            const modal = document.getElementById("imageModal");
+            if (!modal.classList.contains("open")) return;
+            if (e.key == "ArrowRight") nextImage();
+            if (e.key == "ArrowLeft") prevImage();
+            if (e.key == "Escape") closeModal();
+        });
+        function confirmDelete(actionUrl, message) {
+            const modal = document.getElementById("deleteModal");
+            const form = document.getElementById("deleteForm");
+            const msg = document.getElementById("deleteMessage");
+        
+            form.action = actionUrl;
+            msg.innerText = message;
+
+            modal.classList.add("open");
+            document.getElementById("backdrop").classList.add("show");
+        }
+
+        function closeDeleteModal() {
+            document.getElementById("deleteModal").classList.remove("open");
+            document.getElementById("backdrop").classList.remove("show");
+        }
+
+    </script>
+
+    <div id="deleteModal" class="modal">
+        <div class="card" style="max-width: 320px; text-align: center; background: var(--bg);">
+            <h3>Are you sure?</h3>
+            <p id="deleteMessage">This action cannot be undone.</p>
+            <div class="actions" style="flex-direction: row; justify-content: center; margin-top: 10px;">
+                <button class="button secondary" onclick="closeDeleteModal()">Cancel</button>
+                <form id="deleteForm" method="POST" action="">
+                    <button class="button" style="background: #c52222; color: #052e16;" type="submit">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="imageModal" class="modal">
+        <button class="close" onclick="closeModal()">✕</button>
+        <button class="nav left" onclick="prevImage()">‹</button>
+        <img id="modalImage">
+        <button class="nav right" onclick="nextImage()">›</button>
+    </div>
+
+    <aside class="sidebar" id="sidebar">
+
+        <button class="collapse-button" onclick="closeSidebar()">✕ Close Menu</button>
+
+        <div class="sidebar-card">
+            <a href="{{ url_for('home') }}"><button class="button home-btn">Home</button></a>
+        </div>
+
+        <div class="sidebar-card">
+            <a href="{{ url_for('new_plant', next='journal', plant=active_plant.id if active_plant else None) }}" class="add-plant-btn">
+                + Add Plant
+            </a>
+
+            {% if active_plant %}
+                <a href="{{ url_for('edit_plant', plant_id=active_plant.id) }}" class="edit-plant-btn">✎ Edit Plant</a>
+
+                <button class="del-plant-btn" type="button" 
+                        onclick="confirmDelete('/plants/delete/{{ active_plant.id }}', 'Delete this plant and ALL its entries?')">
+                    🗑️ Delete Plant
+                </button>
+            {% endif %}
+        </div>
+
+        <div class="sidebar-card">
+            <div class="header">
+                <div class="subtitle">Plants</div>
+            </div>
+            <div class="plant-list">
+            {% for plant in plants %}
+                <a href="{{ url_for('journal', plant=plant.id) }}"
+                    title="{{ plant.name }}"
+                    class="plant-item {% if active_plant and plant.id == active_plant.id %}active{% endif %}">
+                    {{ plant.name }}
+                </a>
+            {% endfor %}
+            </div>
+        </div>
+
+    </aside>
+
+    <body>
+        <div class="container">
+            <div class="header-section">
+                <div class="top-bar">
+                    <button id="menuButton" class="menu-button">☰</button>
+                    <div class="logo-title">🌱 LeafLog</div>
+                </div>
+
+                {% if active_plant %}
+                    <div id="notes" class="action-bar">
+                        <h1 class="plant-name">{{ active_plant.name }}</h1>
+                        <a href="{{ url_for('add_entry', plant_id=active_plant.id) }}"><button class="button">+ Entry</button></a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div id="backdrop" class="backdrop2" onclick="closeSidebar()"></div>
+
+            <div class="grid">
+                {% for entry in entries %}
+                <div class="card">
+
+                    <div class="card-content">
+                        <div class="badge">{{ entry.entry_date }}</div>
+                        <h3>Notes</h3>
+                        <p class="notes-text">
+                            {{ entry.notes or "No notes for this entry." }}
+                        </p>
+                        <button class="toggle-notes" onclick="toggleNotes(this)" style="display:none;">
+                            Show more
+                        </button>
+                    </div>
+
+                    <div class="card-footer">
+                        {% if entry.photos %}
+                            {% set photos = entry.photos.split(",") %}
+                            {% set total = photos|length %}
+                            <div class="thumbs">
+                                {% for photo in photos[:6] %}
+                                    {% if loop.index == 6 and total > 6 %}
+                                        <div class="thumb-wrap" onclick="openModalFromThumb(this.querySelector('img'))">
+                                            <img src="/uploads/{{ photo }}" class="thumb">
+                                            <div class="thumb-overlay">+{{ total - 5 }}</div>
+                                        </div>
+                                    {% else %}
+                                        <img src="/uploads/{{ photo }}" class="thumb" onclick="openModalFromThumb(this)">
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="actions">
+                            <a href="{{ url_for('edit_entry', entry_id=entry.id, plant_id=active_plant.id) }}"><button class="button">✎ Edit</button></a>
+                            <button class="button secondary" type="button" 
+                                    onclick="confirmDelete('/delete/{{ entry.id }}?plant_id={{ active_plant.id }}', 'Delete this entry?')">
+                                🗑️ Delete
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+            </div>
+        </div>
+        
+        <script>
+            const sidebar = document.getElementById("sidebar");
+            const backdrop = document.getElementById("backdrop");
+            const menuButton = document.getElementById("menuButton");
+
+            menuButton.addEventListener("click", () => {
+                sidebar.classList.add("open");
+                backdrop.classList.add("show");
+            });
+
+            function closeSidebar() {
+                sidebar.classList.remove("open");
+                backdrop.classList.remove("show");
+            }
+
+            function toggleNotes(btn) {
+                const notesText = btn.previousElementSibling;
+                if (notesText.classList.contains("collapsed")) {
+                    notesText.classList.remove("collapsed");
+                    btn.innerText = "Show less";
+                } else {
+                    notesText.classList.add("collapsed");
+                    btn.innerText = "Show more";
+                }
+            }
+
+            function NoteTruncation() {
+                document.querySelectorAll(".notes-text").forEach(note => {
+                    const lineHeight = parseFloat(getComputedStyle(note).lineHeight);
+                    const maxLines = 6;
+                    const maxHeight = lineHeight * maxLines;
+
+                    if (note.scrollHeight > maxHeight + 5) {
+                        note.classList.add("collapsed");
+                        note.nextElementSibling.style.display = "inline";
+                    }
+                });
+            }
+
+            window.addEventListener("load", NoteTruncation);
+            
+        </script>
+    </body>
+</html>
