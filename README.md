@@ -6,7 +6,7 @@ When you run LeafLog, it will launch a Flask server at 127.0.0.1 (port 8080 on d
 
 From there, it's a basic journaling app. Open the side menu, add a plant, and get growing!
 
-This app runs 100% locally on your phone or PC. That means no data is collected or sent to anyone or anywhere.
+This app runs 100% locally on your Android device or PC. That means no data is collected or sent to anyone or anywhere.
 
 # How to run it
 Android - just download the APK from [Releases](https://github.com/AphelionWasTaken/LeafLog/releases/latest). Since this is an unsigned debug APK, you will need to enable sideloading apps on your device.
