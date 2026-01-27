@@ -11,7 +11,7 @@ This app runs 100% locally on your Android device or PC. That means no data is c
 # How to run it
 Android - just download the APK from [Releases](https://github.com/AphelionWasTaken/LeafLog/releases/latest). Since this is an unsigned debug APK, you will need to enable sideloading apps on your device.
 
-Desktop - Run main.py with python. You'll need the following modules: kivy, flask, and waitress.
+Desktop - Run main.py with python. You'll need the following modules: kivy, Flask, Flask-SQLAlchemy, and waitress.
 
 # How to build it
 I hope I haven't forgotten anything...
