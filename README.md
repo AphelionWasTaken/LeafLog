@@ -9,7 +9,7 @@ From there, it's a basic journaling app. Open the side menu, add a plant, and ge
 This app runs 100% locally on your Android device or PC. That means no data is collected or sent to anyone or anywhere.
 
 # How to run it
-Android - just download the APK from [Releases](https://github.com/AphelionWasTaken/LeafLog/releases/latest). You will need to enable sideloading apps on your device to install the APK.
+Android - Just download the APK from [Releases](https://github.com/AphelionWasTaken/LeafLog/releases/latest). You will need to enable sideloading apps on your device to install the APK.
 
 Desktop - Run main.py with python. You'll need the following modules: kivy, Flask, Flask-SQLAlchemy, and waitress.
 
