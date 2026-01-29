@@ -3,60 +3,7 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Add Entry</title>
-        <style>
-            *, *::before, *::after {
-                box-sizing: border-box;
-            }
-            .container {
-                max-width: 500px;
-                margin: 0 auto; 
-                width: 100%;
-            }
-            body {
-                font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-                background: #020617;
-                color: white;
-                padding: 20px;
-            }
-            .form-group { margin-bottom: 20px; }
-            label {
-                display: block;
-                margin-bottom: 8px;
-                color: #94a3b8;
-                font-weight: 600;
-            }
-            input, textarea, select { 
-                width: 100%;
-                padding: 12px;
-                border-radius: 8px; 
-                border: 1px solid #1f2937;
-                background: #0f172a;
-                color: white;
-            }
-            
-            .file-input-label {
-                display: inline-block;
-                background: #1f2937;
-                padding: 12px;
-                border-radius: 8px;
-                cursor: pointer;
-                border: 1px dashed #22c55e;
-                text-align: center;
-                width: 100%;
-            }
-            .submit-btn {
-                background: #22c55e;
-                color: #052e16;
-                border: none;
-                cursor: pointer;
-                padding: 12px;
-                border-radius: 8px;
-                width: 100%;
-                font-weight: 700;
-                text-align: center;
-            }
-            
-        </style>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/backscreens.css') }}">
     </head>
     <body>
         <div class="container">
@@ -112,34 +59,8 @@
             
         </div>
 
-        <script>
-            document.getElementById('datePicker').valueAsDate = new Date();
-
-            function updateFileCountAndPreview(input) {
-                const count = input.files.length;
-                document.getElementById('file-count').innerText = count + " photo(s) selected";
-                const previewContainer = document.getElementById('preview-container');
-                previewContainer.innerHTML = "";
-
-                if (input.files) {
-                    for (let i = 0; i < input.files.length; i++) {
-                        const file = input.files[i];
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const img = document.createElement("img");
-                            img.src = e.target.result;
-                            img.style.width = "100px";
-                            img.style.height = "100px";
-                            img.style.objectFit = "cover";
-                            img.style.borderRadius = "8px";
-                            img.style.border = "1px solid #1f2937";
-                            previewContainer.appendChild(img);
-                        }
-                        reader.readAsDataURL(file);
-                    }
-                }
-            }
-
-        </script>
+        <script src="{{ url_for('static', filename='js/datepicker.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/image-count-preview.js') }}"></script>
+        
     </body>
 </html>
