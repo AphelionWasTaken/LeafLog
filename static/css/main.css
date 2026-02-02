@@ -1,12 +1,14 @@
 :root {
-    --bg: #0f172a;
     --card: #020617;
     --accent: #22c55e;
     --muted: #94a3b8;
     --text: #e5e7eb;
+    --border: #1f2937
 }
 
-* {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
@@ -60,17 +62,36 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    border-top: 1px solid #1f2937;
+    border-top: 1px solid var(--border);
     padding-top: 15px;
+}
+
+.action-bar a {
+    flex-shrink: 0;
 }
 
 .plant-name {
     font-size: 28px;
     font-weight: 700;
     margin: 0;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    min-width: 0;
+}
+
+.card-plant-name {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.4em;
+}
+
+.card-plant-name.collapsed {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
+    line-clamp: 6;
 }
 
 .subtitle {
@@ -85,19 +106,38 @@ body {
 
 .button {
     background: var(--accent);
-    color: #052e16;
+    color: var(--card);
     border: none;
     border-radius: 12px;
     padding: 10px 14px;
     font-weight: 600;
     cursor: pointer;
     box-shadow: 0 10px 20px rgba(34, 197, 94, .2);
+    text-decoration: none;
+    font-size: 13px;
+    flex-shrink: 0;
 }
 
 .button.secondary {
     background: transparent;
     color: var(--text);
     border: 1px solid #1f2937;
+    padding: 10px 14px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.button.delete {
+    background: #c52222;
+    color: var(--card);
+    border: none;
+    border-radius: 12px;
+    padding: 10px 14px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+    box-shadow: 0 10px 20px rgba(197, 34, 34, 0.2);
 }
 
 .grid {
@@ -107,7 +147,7 @@ body {
 }
 
 .card {
-    background: #020617;
+    background: var(--card);
     border: 1px solid #1f2937;
     border-radius: 16px;
     padding: 16px;
@@ -150,8 +190,8 @@ body {
 
 .badge {
     font-size: 12px;
-    color: #052e16;
-    background: linear-gradient(135deg, #22c55e, #4ade80);
+    color: var(--card);
+    background: linear-gradient(135deg, var(--accent), #4ade80);
     border: none;
     padding: 6px 12px;
     border-radius: 999px;
@@ -236,9 +276,9 @@ body {
 }
 
 .menu-button {
-    background: #020617;
-    border: 1px solid #1f2937;
-    color: #e5e7eb;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
     font-size: 20px;
     padding: 8px 12px;
     border-radius: 10px;
@@ -251,8 +291,8 @@ body {
     left: -320px;
     height: 100%;
     width: 300px;
-    background: #020617;
-    border-right: 1px solid #1f2937;
+    background: var(--card);
+    border-right: 1px solid var(--border);
     padding: 16px;
     transition: left 0.25s ease;
     z-index: 1000;
@@ -293,8 +333,8 @@ body {
 }
 
 .sidebar-card {
-    background: #020617;
-    border: 1px solid #1f2937;
+    background: transparent;
+    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 16px;
     margin-bottom: 16px;
@@ -307,8 +347,8 @@ body {
 .collapse-button {
     width: 100%;
     background: transparent;
-    border: 1px solid #1f2937;
-    color: #e5e7eb;
+    border: 1px solid var(--border);
+    color: var(--text);
     padding: 10px;
     border-radius: 10px;
     font-size: 15px;
@@ -318,37 +358,69 @@ body {
 }
 
 .collapse-button:hover {
-    background: #020617;
+    background: var(--card);
 }
 
 .home-btn {
     width: 100%;
     padding: 14px;
-    background: #22c55e;
-    color: #052e16;
+    background: var(--accent);
+    color: var(--text);
     font-weight: 700;
+    font-size: 15px;
+}
+
+.archive-btn
+{
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    border: var(--accent) 2px solid;
+    color: var(--text);
+    margin-top: 16px;
+    font-weight: 700;
+    font-size: 15px;
 }
 
 .add-plant-btn {
     display: block;
-    background: #22c55e;
-    color: #052e16;
+    background: var(--accent);
+    color: var(--card);
     padding: 12px;
     border-radius: 12px;
     font-weight: 700;
+    font-size: 15px;
     text-align: center;
     text-decoration: none;
-    margin-bottom: 16px;
     box-shadow: 0 6px 16px rgba(34, 197, 94, .25);
 }
 
 .edit-plant-btn {
     display: block;
-    background: #22c55e;
-    color: #052e16;
+    background: var(--accent);
+    color: var(--card);
     padding: 12px;
     border-radius: 12px;
     font-weight: 700;
+    font-size: 15px;
+    text-align: center;
+    text-decoration: none;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 6px 16px rgba(34, 197, 94, .25);
+}
+
+.archive-plant-btn {
+    display: block;
+    width: 100%;
+    background: var(--accent);
+    color: var(--card);
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 15px;
     text-align: center;
     text-decoration: none;
     margin-bottom: 16px;
@@ -359,16 +431,15 @@ body {
     display: block;
     width: 100%;
     background: #c52222;
-    color: #052e16;
+    color: var(--card);
     padding: 14px;
     border-radius: 12px;
     border: none;
     cursor: pointer;
+    font-weight: 700;
     font-size: 15px;
-    font-weight: 600;
     text-align: center;
     text-decoration: none;
-    margin-bottom: 0px;
     box-shadow: 0 6px 16px rgba(197, 34, 34, 0.25);
 }
 
@@ -383,9 +454,9 @@ body {
     border-radius: 10px;
     text-decoration: none;
     text-align: center;
-    color: #e5e7eb;
-    background: #020617;
-    border: 1px solid #1f2937;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid var(--border);
     transition: background .2s ease;
     white-space: nowrap;
     overflow: hidden;
@@ -394,13 +465,13 @@ body {
 }
 
 .plant-item:hover {
-    background: #020617;
-    border-color: #22c55e;
+    background: var(--card);
+    border-color: var(--accent);
 }
 
 .plant-item.active {
-    background: linear-gradient(135deg, #22c55e, #4ade80);
-    color: #052e16;
+    background: linear-gradient(135deg, var(--accent), #4ade80);
+    color: var(--card);
     font-weight: 600;
     border: none;
 }

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LeafLog - Archive</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    </head>
+
+    <script src="{{ url_for('static', filename='js/image-modal.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/confirm.js') }}"></script>
+
+    <div id="deleteModal" class="modal">
+        <div class="card" style="max-width: 320px; text-align: center;">
+            <h3>Are you sure?</h3>
+            <p id="deleteMessage">This action cannot be undone.</p>
+            <div class="actions" style="flex-direction: row; justify-content: center; margin-top: 10px;">
+                <button class="button secondary" onclick="closeDeleteModal()">Cancel</button>
+                <form id="deleteForm" method="POST" action="">
+                    <button id = "confirmBtn" class="button delete" type="submit">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="imageModal" class="modal">
+        <button class="close" onclick="closeModal()">✕</button>
+        <button class="nav left" onclick="prevImage()">‹</button>
+        <img id="modalImage">
+        <button class="nav right" onclick="nextImage()">›</button>
+    </div>
+
+    <aside class="sidebar" id="sidebar">
+
+        <button class="collapse-button" onclick="closeSidebar()">✕ Close Menu</button>
+
+        <div class="sidebar-card">
+            <a href="{{ url_for('home') }}">
+                <button class="button home-btn">Home</button>
+            </a>
+        </div>
+
+    <div class="sidebar-card">
+        <a href="{{ url_for('new_plant', next='journal', plant=active_plant.id if active_plant else None) }}" class="add-plant-btn">
+            + Add Plant
+        </a>
+    </div>
+
+    <div class="sidebar-card">
+        <div class="header">
+            <div class="subtitle">Plants</div>
+        </div>
+        <div class="plant-list">
+        {% for plant in plants %}
+            <a href="{{ url_for('journal', plant=plant.id) }}"
+                title="{{ plant.name }}"
+                class="plant-item {% if active_plant and plant.id == active_plant.id %}active{% endif %}">
+                {{ plant.name }}
+            </a>
+        {% endfor %}
+        </div>
+    </div>
+
+    </aside>
+    <body>
+        <div class="container">
+        <div class="header-section">
+                <div class="top-bar">
+                    <button id="menuButton" class="menu-button">☰</button>
+                    <div class="logo-title">🌱 LeafLog</div>
+                </div>
+                <div class="action-bar">
+                        <h1 class="plant-name">Archived Plants</h1>
+                </div>
+        </div>
+
+        <div id="backdrop" class="backdrop2" onclick="closeSidebar()"></div>
+
+            <div class="grid">
+                
+                {% for entry in plant_entries %}
+                <div class="card">
+                    
+                    <div class="card-content">
+                        <h3 class="card-plant-name">{{ entry.plant.name }}</h3>
+                        <button class="toggle-notes" onclick="toggleNotes(this)" style="display:none;">
+                            Show more
+                        </button>
+                        
+                        {% if entry.entry %}
+                            <div class="card-content">
+                                <div class="badge">{{ entry.entry.entry_date }}</div>
+                                <p class="notes-text">{{ entry.entry.notes or "No notes for this entry." }}</p>
+                                <button class="toggle-notes" onclick="toggleNotes(this)" style="display:none;">
+                                    Show more
+                                </button>
+                            </div>
+                            
+                            {% if entry.entry.photos %}
+                                {% set photos = entry.entry.photos.split(",") %}
+                                {% set total = photos|length %}
+                                <div class="thumbs">
+                                    {% for photo in photos[:3] %}
+                                    {% if loop.index == 3 and total > 3 %}
+                                        <div class="thumb-wrap" onclick="openModalFromThumb(this.querySelector('img'))">
+                                            <img src="/uploads/{{ photo }}" class="thumb">
+                                            <div class="thumb-overlay">+{{ total - 2 }}</div>
+                                        </div>
+                                    {% else %}
+                                        <img src="/uploads/{{ photo }}" class="thumb" onclick="openModalFromThumb(this)">
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                        {% else %}
+                            <p><em>No entries yet for this plant.</em></p>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="actions">
+                            <a href="{{ url_for('archived_plant_entries', plant_id=entry.plant.id) }}"
+                                class="button secondary" type="button">
+                                📓 View Journal
+                            </a>
+                        </div>
+                        <div class="actions">
+                            <button class="button" type="button"
+                                onclick="confirmAction(
+                                    '/plants/unarchive/{{ entry.plant.id }}',
+                                    'Restore this plant to your active list?',
+                                    'Restore',
+                                    '#22c55e',
+                                    'rgba(34, 197, 94, .2)')">
+                                ♻ Restore
+                            </button>
+                            <button class="button delete" type="button"
+                                onclick="confirmAction(
+                                    '/plants/delete/{{ entry.plant.id }}',
+                                    'Delete this plant permanently?',
+                                    'Delete',
+                                    '#c52222')">
+                                🗑️ Delete Plant
+                            </button>
+                        </div>
+                    </div>
+                    
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/truncate-notes.js') }}"></script>
+        
+    </body>
+</html>

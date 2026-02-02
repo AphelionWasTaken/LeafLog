@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LeafLog - Journal</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    </head>
+
+    <script src="{{ url_for('static', filename='js/image-modal.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/confirm.js') }}"></script>
+
+    <div id="deleteModal" class="modal">
+        <div class="card" style="max-width: 320px; text-align: center; background: var(--bg);">
+            <h3>Are you sure?</h3>
+            <p id="deleteMessage">This action cannot be undone.</p>
+            <div class="actions" style="flex-direction: row; justify-content: center; margin-top: 10px;">
+                <button class="button secondary" onclick="closeDeleteModal()">Cancel</button>
+                <form id="deleteForm" method="POST" action="">
+                    <button id = "confirmBtn" class="button" style="background: #c52222; color: #052e16;" type="submit">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="imageModal" class="modal">
+        <button class="close" onclick="closeModal()">✕</button>
+        <button class="nav left" onclick="prevImage()">‹</button>
+        <img id="modalImage">
+        <button class="nav right" onclick="nextImage()">›</button>
+    </div>
+
+    <aside class="sidebar" id="sidebar">
+
+        <button class="collapse-button" onclick="closeSidebar()">✕ Close Menu</button>
+
+        <div class="sidebar-card">
+            <a href="{{ url_for('home') }}"><button class="button home-btn">Home</button></a>
+
+            <a href="{{ url_for('archive') }}">
+                <button class="button archive-btn">🗄️ Archive</button>
+            </a>
+        </div>
+
+        <div class="sidebar-card">
+            <a href="{{ url_for('new_plant', next='journal', plant=active_plant.id if active_plant else None) }}" class="add-plant-btn">
+                + Add Plant
+            </a>
+        </div>
+
+        <div class="sidebar-card">
+            <div class="header">
+                <div class="subtitle">Plants</div>
+            </div>
+            <div class="plant-list">
+            {% for plant in plants %}
+                <a href="{{ url_for('journal', plant=plant.id) }}"
+                    title="{{ plant.name }}"
+                    class="plant-item {% if active_plant and plant.id == active_plant.id %}active{% endif %}">
+                    {{ plant.name }}
+                </a>
+            {% endfor %}
+            </div>
+        </div>
+
+    </aside>
+
+    <body>
+        <div class="container">
+            <div class="header-section">
+                <div class="top-bar">
+                    <button id="menuButton" class="menu-button">☰</button>
+                    <div class="logo-title">🌱 LeafLog</div>
+                </div>
+
+                {% if active_plant %}
+                    <div id="notes" class="action-bar">
+                        <h1 class="plant-name">{{ active_plant.name }}</h1>
+                        <a href="{{ url_for('add_entry', plant_id=active_plant.id) }}"><button class="button">+ Entry</button></a>
+                    </div>
+                {% else %}
+                    <div id="notes" class="action-bar">
+                        <h1 class="plant-name">{{ plant.name }}</h1>
+                {% endif %}
+            </div>
+
+            <div id="backdrop" class="backdrop2" onclick="closeSidebar()"></div>
+
+            <div class="grid">
+                {% for entry in entries %}
+                <div class="card">
+
+                    <div class="card-content">
+                        <div class="badge">{{ entry.entry_date }}</div>
+                        <h3>Notes</h3>
+                        <p class="notes-text">
+                            {{ entry.notes or "No notes for this entry." }}
+                        </p>
+                        <button class="toggle-notes" onclick="toggleNotes(this)" style="display:none;">
+                            Show more
+                        </button>
+                    </div>
+
+                    <div class="card-footer">
+                        {% if entry.photos %}
+                            {% set photos = entry.photos.split(",") %}
+                            {% set total = photos|length %}
+                            <div class="thumbs">
+                                {% for photo in photos[:6] %}
+                                    {% if loop.index == 6 and total > 6 %}
+                                        <div class="thumb-wrap" onclick="openModalFromThumb(this.querySelector('img'))">
+                                            <img src="/uploads/{{ photo }}" class="thumb">
+                                            <div class="thumb-overlay">+{{ total - 5 }}</div>
+                                        </div>
+                                    {% else %}
+                                        <img src="/uploads/{{ photo }}" class="thumb" onclick="openModalFromThumb(this)">
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="actions">
+                            <a href="{{ url_for('edit_entry', entry_id=entry.id, plant_id=active_plant.id) }}"><button class="button">✎ Edit</button></a>
+                            <button class="button secondary" type="button" 
+                                    onclick="confirmAction(
+                                        '/delete/{{ entry.id }}?plant_id={{ active_plant.id }}',
+                                        'Delete this entry?',
+                                        'Delete',
+                                        '#c52222')">
+                                🗑️ Delete
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+            </div>
+        </div>
+
+        <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/truncate-notes.js') }}"></script>
+        
+    </body>
+</html>

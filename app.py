@@ -35,6 +35,7 @@ class JournalEntry(db.Model):
 class Plant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
+    archived = db.Column(db.Boolean, default=False)
     entries = db.relationship("JournalEntry", backref="plant", lazy=True, cascade="all, delete-orphan")
 
 
@@ -45,7 +46,7 @@ with app.app_context():
 # Routes
 @app.route("/")
 def home():
-    plants = Plant.query.all()
+    plants = Plant.query.filter_by(archived=False).all()
     
     plant_entries = []
     for plant in plants:
@@ -59,7 +60,7 @@ def home():
 
 @app.route("/journal")
 def journal():
-    plants = Plant.query.all()
+    plants = Plant.query.filter_by(archived=False).all()
 
     if plants:
         active_id = request.args.get("plant", plants[0].id, type=int)
@@ -210,11 +211,14 @@ def new_plant():
 
 @app.route("/plants/delete/<int:plant_id>", methods=["POST"])
 def delete_plant(plant_id):
-    plant = Plant.query.get(plant_id)
-    if not plant:
-        abort(404)
+    plant = Plant.query.get_or_404(plant_id)
+
+    JournalEntry.query.filter_by(plant_id=plant.id).delete()
+
     db.session.delete(plant)
     db.session.commit()
+    if plant.archived:
+        return redirect(url_for("archive"))
     return redirect(url_for("home"))
 
 
@@ -230,6 +234,62 @@ def edit_plant(plant_id):
 
         return redirect(url_for("journal", plant=plant.id))
     return render_template("edit_plant.html", plant=plant)
+
+
+@app.route("/archive")
+def archive():
+    sidebar_plants = Plant.query.filter_by(archived=False).all()
+
+    archived_plants = Plant.query.filter_by(archived=True).all()
+
+    plant_entries = []
+    for plant in archived_plants:
+        latest_entry = JournalEntry.query.filter_by(plant_id=plant.id)\
+            .order_by(JournalEntry.entry_date.desc())\
+            .first()
+        plant_entries.append({"plant": plant, "entry": latest_entry})
+
+    return render_template(
+        "archive.html",
+        plant_entries=plant_entries,
+        plants=sidebar_plants,
+        active_plant=None
+    )
+
+
+@app.route("/plants/archive/<int:plant_id>", methods=["POST"])
+def archive_plant(plant_id):
+    plant = Plant.query.get_or_404(plant_id)
+    plant.archived = True
+    db.session.commit()
+    return redirect(url_for("home"))
+
+
+@app.route("/plants/unarchive/<int:plant_id>", methods=["POST"])
+def unarchive_plant(plant_id):
+    plant = Plant.query.get_or_404(plant_id)
+    plant.archived = False
+    db.session.commit()
+    return redirect(url_for("archive"))
+
+
+@app.route("/archive/plant/<int:plant_id>")
+def archived_plant_entries(plant_id):
+    sidebar_plants = Plant.query.filter_by(archived=False).all()
+
+    plant = Plant.query.filter_by(id=plant_id, archived=True).first_or_404()
+
+    entries = JournalEntry.query.filter_by(plant_id=plant.id)\
+        .order_by(JournalEntry.entry_date.desc())\
+        .all()
+
+    return render_template(
+        "archived_entries.html",
+        plant=plant,
+        entries=entries,
+        plants=sidebar_plants,
+        active_plant=None
+    )
 
 
 @app.route("/upload_file", methods=["POST"])

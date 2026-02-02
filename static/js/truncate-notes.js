@@ -10,7 +10,9 @@ function toggleNotes(btn) {
 }
 
 function NoteTruncation() {
-    document.querySelectorAll(".notes-text").forEach(note => {
+    const elementsToTruncate = document.querySelectorAll(".notes-text, .card-plant-name");
+
+    elementsToTruncate.forEach(note => {
         const lineHeight = parseFloat(getComputedStyle(note).lineHeight);
         const maxLines = 6;
         const maxHeight = lineHeight * maxLines;
