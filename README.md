@@ -52,7 +52,9 @@ Save the file and run `buildozer android debug` to build the APK.
 # Screenshots
 All screenshots are from Android Studio, as I ironically do not own an Android device yet!
 
-<img width="236" height="532" alt="image" src="https://github.com/user-attachments/assets/057aaecb-38d3-4956-89cf-0f712f41b5c1" />
-<img width="236" height="532" alt="image" src="https://github.com/user-attachments/assets/c5247462-9d33-4494-b236-e07a0f3e5ca4" />
-<img width="236" height="532" alt="image" src="https://github.com/user-attachments/assets/615159ff-5acc-491e-8727-3b7bf57db230" />
-
+<img width="236" height="532" alt="image" src="https://github.com/user-attachments/assets/d776f53d-625e-4db8-aa6e-aa521541acd6" />
+<img width="236" height="532" alt="image" src="https://github.com/user-attachments/assets/2f34ad9e-e407-48da-b95e-a8804f34259e" />
+<img width="236" height="532" alt="image" src="https://github.com/user-attachments/assets/84ca6b6b-efbc-49fb-8e0f-cd5f98f687a0" />
+<img width="236" height="532" alt="image" src="https://github.com/user-attachments/assets/0110c714-8155-4e3b-ab34-7df94c1b8945" />
+<img width="236" height="532" alt="image" src="https://github.com/user-attachments/assets/03b5ecc9-805c-4419-a7b4-505524a79ad4" />
+<img width="236" height="532" alt="image" src="https://github.com/user-attachments/assets/ffdc11f5-1fd7-45d8-a442-bae6a596274b" />
