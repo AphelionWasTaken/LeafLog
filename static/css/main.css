@@ -296,6 +296,8 @@ body {
     padding: 16px;
     transition: left 0.25s ease;
     z-index: 1000;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .sidebar.open {
