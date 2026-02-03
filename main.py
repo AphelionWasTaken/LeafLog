@@ -49,13 +49,17 @@ else:
     Uri = autoclass('android.net.Uri')
     ArrayList = autoclass("java.util.ArrayList")
 
+    
+    # Custom WebChromeClient
+    LeafLogChromeClient = autoclass("org.test.leaflog.LeafLogChromeClient")
+
 
     # Globals    
     FILE_PICKER_CODE = 1001
     PORT = 5000
     chrome = None
     webview_instance = None
-    back_key_listener = None
+    back_handler = None
 
 
     # Start flask server
@@ -63,10 +67,6 @@ else:
         serve(flask_app, host="127.0.0.1", port=PORT)
 
     threading.Thread(target=start_flask, daemon=True).start()
-
-
-    # Custom WebChromeClient
-    LeafLogChromeClient = autoclass("org.test.leaflog.LeafLogChromeClient")
 
 
     # Handle activity result
@@ -129,30 +129,30 @@ else:
 
     # Bind the activity result handler
     activity.bind(on_activity_result=on_activity_result)
- 
+    
 
-    # Listen for back presses
+    # Listen for back button presses
     class BackPressListener(PythonJavaClass):
         __javainterfaces__ = ["android/view/View$OnKeyListener"]
-        __javacontext__ = "app"
-
+        
+        def __init__(self, webview):
+            super().__init__()
+            self.webview = webview
+        
         @java_method("(Landroid/view/View;ILandroid/view/KeyEvent;)Z")
         def onKey(self, view, keyCode, event):
             KEYCODE_BACK = 4
             ACTION_UP = 1
 
-            if event is None:
-                return False
-
             if keyCode == KEYCODE_BACK and event.getAction() == ACTION_UP:
-                if webview_instance and webview_instance.canGoBack():
-                    webview_instance.goBack()
+                if self.webview and self.webview.canGoBack():
+                    self.webview.goBack()
                     return True
 
             return False
 
 
-    # Create WebView
+    # Create a Runnable to run on UI thread
     class WebViewRunnable(PythonJavaClass):
         __javainterfaces__ = ["java/lang/Runnable"]
 
@@ -164,10 +164,12 @@ else:
         def run(self):
             self.callback()
 
-
+    # Create WebView
     def create_webview():
         global chrome
         global webview_instance
+        global back_handler
+
         activity = PythonActivity.mActivity
         webview = WebView(activity)
         webview_instance = webview
@@ -183,7 +185,8 @@ else:
         chrome = LeafLogChromeClient(PythonActivity.mActivity)
         webview.setWebChromeClient(chrome)
 
-        webview_instance.setOnKeyListener(BackPressListener())
+        back_handler = BackPressListener(webview)
+        webview.setOnKeyListener(back_handler)
 
         webview.setFocusableInTouchMode(True)
         webview.requestFocus()
@@ -193,7 +196,6 @@ else:
         webview.loadUrl(f"http://127.0.0.1:{PORT}")
         webview.requestFocus()
         
-
 
     # Wait for Flask then launch WebView
     def poll_flask(callback):

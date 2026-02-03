@@ -32,7 +32,7 @@ source.include_exts = py,png,jpg,kv,atlas,html,js,css
 #source.exclude_patterns = license,images/*/*.jpg
 
 # (str) Application versioning (method 1)
-version = 0.1
+version = 0.0.4
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
@@ -104,7 +104,7 @@ android.permissions = INTERNET, ACCESS_NETWORK_STATE, CAMERA, READ_EXTERNAL_STOR
 #android.features = android.hardware.usb.host
 
 # (int) Target Android API, should be as high as possible.
-#android.api = 31
+android.api = 34
 
 # (int) Minimum API your APK / AAB will support.
 #android.minapi = 21
