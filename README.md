@@ -1,6 +1,16 @@
 # LeafLog
 LeafLog is a locally-run web-based plant growth journal for Android and Desktop. This app is written in Python with Flask and Kivy.
 
+# Screenshots
+All screenshots are from Android Studio, as I ironically do not own an Android device yet!
+
+<img width="236" height="532" alt="image" src="https://github.com/user-attachments/assets/d776f53d-625e-4db8-aa6e-aa521541acd6" />
+<img width="236" height="532" alt="image" src="https://github.com/user-attachments/assets/2f34ad9e-e407-48da-b95e-a8804f34259e" />
+<img width="236" height="532" alt="image" src="https://github.com/user-attachments/assets/84ca6b6b-efbc-49fb-8e0f-cd5f98f687a0" />
+<img width="236" height="532" alt="image" src="https://github.com/user-attachments/assets/0110c714-8155-4e3b-ab34-7df94c1b8945" />
+<img width="236" height="532" alt="image" src="https://github.com/user-attachments/assets/03b5ecc9-805c-4419-a7b4-505524a79ad4" />
+<img width="236" height="532" alt="image" src="https://github.com/user-attachments/assets/ffdc11f5-1fd7-45d8-a442-bae6a596274b" />
+
 # How it works
 When you run LeafLog, it will launch a Flask server at 127.0.0.1 (port 8080 on desktop, port 5000 on mobile). The app will then connect to the server through webview if on mobile, or through your default browser on desktop.
 
@@ -48,13 +58,3 @@ it should look like the following screenshot:
 <img width="611" height="619" alt="image" src="https://github.com/user-attachments/assets/4583f6d0-106a-4c0c-a3e1-8e32f9037b31" />
 
 Save the file and run `buildozer android debug` to build the APK.
-
-# Screenshots
-All screenshots are from Android Studio, as I ironically do not own an Android device yet!
-
-<img width="236" height="532" alt="image" src="https://github.com/user-attachments/assets/d776f53d-625e-4db8-aa6e-aa521541acd6" />
-<img width="236" height="532" alt="image" src="https://github.com/user-attachments/assets/2f34ad9e-e407-48da-b95e-a8804f34259e" />
-<img width="236" height="532" alt="image" src="https://github.com/user-attachments/assets/84ca6b6b-efbc-49fb-8e0f-cd5f98f687a0" />
-<img width="236" height="532" alt="image" src="https://github.com/user-attachments/assets/0110c714-8155-4e3b-ab34-7df94c1b8945" />
-<img width="236" height="532" alt="image" src="https://github.com/user-attachments/assets/03b5ecc9-805c-4419-a7b4-505524a79ad4" />
-<img width="236" height="532" alt="image" src="https://github.com/user-attachments/assets/ffdc11f5-1fd7-45d8-a442-bae6a596274b" />
